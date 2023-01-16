@@ -15,9 +15,13 @@ function removeOneCharacter (index) {
     return (
     <div className="container">
         <Table characterData={characters} removeCharacter={removeOneCharacter} />
-        <Form />
+        <Form handleSubmit={updateList} />
     </div>
   )
+function updateList(person) {
+    setCharacters([...characters, person]);
+    <Form handleSubmit={updateList} />
+}
 }
 
 export default MyApp;
