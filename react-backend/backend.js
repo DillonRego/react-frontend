@@ -72,10 +72,11 @@ function findUsersById(id) {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.status(200).end();
+    res.status(201).send(userToAdd).end();
 });
 
 function addUser(user){
+    user.id = newId().toString();
     users['users_list'].push(user);
 }
 
@@ -87,7 +88,7 @@ app.delete('/users/:id', (req, res) => {
     else {
         result = {users_list: result};
         users['users_list'].splice(users['users_list'].indexOf(result),1);
-        res.status(200).send('Item successfully deleted.');
+        res.status(204).send('Item successfully deleted.');
     }
 });
 
@@ -122,6 +123,10 @@ const findUserByNameAndJob = (name, job) => {
 
 const findUserByJob = (job) => {
     return users['users_list'].filter( (user) => (user['job'] === job));
+}
+
+function newId(){
+    return Math.random();
 }
 
 app.get('/', (req, res) => {

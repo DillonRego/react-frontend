@@ -11,13 +11,6 @@ function MyApp() {
                 setCharacters(result);
         });
     },[]);
-
-function removeOneCharacter (index) {
-    const updated = characters.filter((character, i) => {
-        return i !== index
-    })
-    setCharacters(updated);
-    }
     
     return (
     <div className="container">
@@ -26,10 +19,23 @@ function removeOneCharacter (index) {
     </div>
   )
 
+  function removeOneCharacter (index) {
+    const updated = characters.filter((character, i)=> {
+        return i !== index
+    });
+    makeDeleteCall(characters.at(index).id.toString()).then(response =>{ 
+    if (response && response.status === 204)
+        setCharacters(updated);
+    else
+        return false;
+    })
+}
+
 function updateList(person) { 
     makePostCall(person).then( result => {
-    if (result && result.status === 200)
-       setCharacters([...characters, person] );
+    if (result && result.status === 201)
+        person = result.data;
+        setCharacters([...characters, person] );
     });
  }
 
@@ -42,6 +48,17 @@ async function fetchAll(){
         console.log(error);
         return false;
     }
+}
+
+async function makeDeleteCall(id){
+    try{
+        const response = await axios.delete('http://localhost:5000/users/' + id);
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return false;
+     }
 }
 
 async function makePostCall(person){
